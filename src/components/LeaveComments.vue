@@ -9,31 +9,42 @@
         align="center"
       >
         <b-form  @submit.stop.prevent>
-          <label for="feedback-name">姓名</label>
+          <label for="feedback-name">title</label>
           <b-input v-model="name" :state="name_validation" id="feedback-name"></b-input>
           <b-form-invalid-feedback :state="name_validation">
             Your user ID must be 3-12 characters long.
           </b-form-invalid-feedback>
-          <label for="feedback-msg">留言</label>
+          <label for="feedback-msg">value</label>
           <b-input v-model="msg" :state="msg_validation" id="feedback-msg"></b-input>
           <b-form-invalid-feedback :state="msg_validation">
             Your user ID must be 3-12 characters long.
           </b-form-invalid-feedback>
-          <b-button block variant="primary" @click="addComment">Block Level Button</b-button>
+          <b-button block variant="primary" @click="addComment">insert</b-button>
       </b-form>
       </b-card>
     </b-card-group>
     <div>
-      <b-card bg-variant="dark" text-variant="white" title="Card Title">
+      <b-card
+       bg-variant="dark"
+       text-variant="white"
+       :title="item.name"
+       v-for="item of commentsList"
+       :key="item.key"
+      >
         <b-card-text>
-          With supporting text below as a natural lead-in to additional content.
+          {{ item.msg }}
         </b-card-text>
+        <b-button variant="danger" @click="deleteComment(item.key)">delete</b-button>
       </b-card>
     </div>
 </div>
 </template>
 <script>
-// @ is an alias to /src
+// vue
+// https://paper.dropbox.com/doc/Vue-ADvo0tRHmXqoJGIfAs4N9
+// firebase
+// https://paper.dropbox.com/doc/Vue-Cli-pbpJGPUyjZy5xuoSFffId
+
 import firebase from 'firebase'
 export default {
   name: 'leaveComments',
@@ -41,10 +52,10 @@ export default {
   },
   data () {
     return {
-      commentsList: firebase.database().ref('/commentsList/'),
+      commentsListDB: firebase.database().ref('/commentsList/'),
       name: '',
       msg: '',
-      leaveCommentsList: []
+      commentsList: []
     }
   },
   computed: {
@@ -56,20 +67,38 @@ export default {
     }
   },
   methods: {
+    reloadLeaveComments () {
+      const self = this
+      self.commentsListDB.on('value', function (data) {
+        self.commentsList = data.val() ? data.val() : {}
+        Object.keys(self.commentsList).forEach(element => {
+          self.commentsList[element].key = element
+        })
+        console.log('commentsList', self.commentsList)
+      })
+    },
     addComment () {
       const self = this
       let param = {
         name: self.name,
         msg: self.msg,
-        sort: self.leaveCommentsList.length || 0,
+        sort: self.commentsList.length || 0,
         flag: 'N'
       }
       self.insertComment(param)
     },
+    deleteComment (key) {
+      const self = this
+      self.commentsListDB.child(key).remove()
+    },
     insertComment (data) {
       const self = this
-      self.commentsList.push(data)
+      self.commentsListDB.push(data)
     }
+  },
+  mounted () {
+    const self = this
+    self.reloadLeaveComments()
   }
 }
 </script>
