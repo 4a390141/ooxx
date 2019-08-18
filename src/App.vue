@@ -3,7 +3,7 @@
     <div id="nav">
       <b-navbar toggleable="lg" type="dark" variant="info">
         <!-- <b-navbar-brand href="#">NavBar</b-navbar-brand> -->
-        <router-link to="/">Home</router-link>
+        <router-link to="/index">Home</router-link>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
           <!-- <b-navbar-nav>
