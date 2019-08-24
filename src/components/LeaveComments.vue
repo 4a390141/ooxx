@@ -12,12 +12,12 @@
           <label for="feedback-name">title</label>
           <b-input v-model="name" :state="name_validation" id="feedback-name"></b-input>
           <b-form-invalid-feedback :state="name_validation">
-            Your user ID must be 3-12 characters long.
+            3到16字以內
           </b-form-invalid-feedback>
           <label for="feedback-msg">value</label>
           <b-input v-model="msg" :state="msg_validation" id="feedback-msg"></b-input>
           <b-form-invalid-feedback :state="msg_validation">
-            Your user ID must be 3-12 characters long.
+            100字以內唷
           </b-form-invalid-feedback>
           <b-button block variant="primary" @click="addComment">insert</b-button>
       </b-form>
@@ -28,7 +28,7 @@
        bg-variant="dark"
        text-variant="white"
        :title="item.name"
-       v-for="item of commentsList"
+       v-for="item in commentsList"
        :key="item.key"
       >
         <b-card-text>
@@ -60,40 +60,61 @@ export default {
   },
   computed: {
     name_validation () {
-      return this.name.length > 2 && this.name.length < 13
+      return this.name.length > 2 && this.name.length < 17
     },
     msg_validation () {
-      return this.msg.length > 2 && this.msg.length < 13
+      return this.msg.length >= 0 && this.msg.length < 101
     }
   },
   methods: {
     reloadLeaveComments () {
       const self = this
       self.commentsListDB.on('value', function (data) {
-        self.commentsList = data.val() ? data.val() : {}
-        Object.keys(self.commentsList).forEach(element => {
-          self.commentsList[element].key = element
+        let tempCommentsList = data.val() ? data.val() : {}
+        // 加入key值 並將物件轉成陣列
+        Object.keys(tempCommentsList).forEach(element => {
+          tempCommentsList[element].key = element
+          self.commentsList.push(tempCommentsList[element])
         })
-        console.log('commentsList', self.commentsList)
+        self.logger.info('載入列表', self.commentsList)
       })
     },
     addComment () {
       const self = this
+      let sort = self.ooxx.getMaxOfArray(self.commentsList, 'sort')
       let param = {
         name: self.name,
         msg: self.msg,
-        sort: self.commentsList.length || 0,
+        sort: sort + 1 || 0,
         flag: 'N'
       }
-      self.insertComment(param)
+
+      if (self.name_validation && self.msg_validation) {
+        self.logger.info('送出 param', param)
+        self.insertComment(param)
+      } else {
+        self.toast('b-toaster-top-center', 'Error', '格式不符')
+        self.logger.warn('name_validation', self.name_validation)
+        self.logger.warn('msg_validation', self.msg_validation)
+      }
     },
     deleteComment (key) {
       const self = this
       self.commentsListDB.child(key).remove()
     },
-    insertComment (data) {
+    insertComment (param) {
       const self = this
-      self.commentsListDB.push(data)
+      self.commentsListDB.push(param)
+    },
+    toast (toaster, title, content) {
+      this.counter++
+      this.$bvToast.toast(content, {
+        title: `${title}`,
+        toaster: toaster,
+        solid: true,
+        appendToast: false,
+        variant: 'danger'
+      })
     }
   },
   mounted () {
@@ -106,5 +127,6 @@ export default {
   .leaveComments{
     padding: 10px;
     width: 100%;
+    overflow-x: hidden;
   }
 </style>

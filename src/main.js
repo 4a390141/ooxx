@@ -2,9 +2,15 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+// 相關函式庫
 import BootstrapVue from 'bootstrap-vue'
 import firebase from 'firebase'
-
+//  自定義function
+import ooxx from '../src/ooxxFunction.js'
+import logger from '../src/logger.js'
+Vue.prototype.ooxx = ooxx
+Vue.prototype.logger = logger
+//  firebase 設定
 const firebaseConfig = {
   apiKey: 'AIzaSyCgW5dRMaPyjm_f2Q6_fo3UgLC7V2m-Ylg',
   authDomain: 'ooxx-73434.firebaseapp.com',
