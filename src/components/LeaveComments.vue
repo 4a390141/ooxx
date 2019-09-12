@@ -72,6 +72,7 @@ export default {
       self.commentsListDB.on('value', function (data) {
         let tempCommentsList = data.val() ? data.val() : {}
         // 加入key值 並將物件轉成陣列
+        self.commentsList = []
         Object.keys(tempCommentsList).forEach(element => {
           tempCommentsList[element].key = element
           self.commentsList.push(tempCommentsList[element])
@@ -101,6 +102,7 @@ export default {
     deleteComment (key) {
       const self = this
       self.commentsListDB.child(key).remove()
+      self.reloadLeaveComments()
     },
     insertComment (param) {
       const self = this
