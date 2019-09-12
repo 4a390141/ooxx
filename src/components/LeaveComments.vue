@@ -70,7 +70,8 @@ export default {
     reloadLeaveComments () {
       const self = this
       self.commentsListDB.on('value', function (data) {
-        let tempCommentsList = data.val() ? data.val() : {}
+        let tempCommentsList = {}
+        tempCommentsList = data.val() ? data.val() : {}
         // 加入key值 並將物件轉成陣列
         self.commentsList = []
         Object.keys(tempCommentsList).forEach(element => {
