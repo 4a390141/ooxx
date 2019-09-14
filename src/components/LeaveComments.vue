@@ -28,8 +28,12 @@
        bg-variant="dark"
        text-variant="white"
        :title="item.name"
-       v-for="item in commentsList"
+       v-for="(item, i) in commentsList"
        :key="item.key"
+        @dragstart="dragStart(i, $event)" @dragover.prevent
+        @dragend="dragEnd" @drop="dragFinish(i, $event)"
+        draggable="true"
+        style="cursor: move;"
       >
         <b-card-text>
           {{ item.msg }}
@@ -55,7 +59,8 @@ export default {
       commentsListDB: firebase.database().ref('/commentsList/'),
       name: '',
       msg: '',
-      commentsList: []
+      commentsList: [],
+      dragging: -1
     }
   },
   computed: {
@@ -67,6 +72,7 @@ export default {
     }
   },
   methods: {
+    // reload function
     reloadLeaveComments () {
       const self = this
       self.commentsListDB.on('value', function (data) {
@@ -78,9 +84,12 @@ export default {
           tempCommentsList[element].key = element
           self.commentsList.push(tempCommentsList[element])
         })
+        console.log(self.commentsList)
+        self.commentsList = self.ooxx.ArraySorForKey(self.commentsList, 'sort')
         self.logger.info('載入列表', self.commentsList)
       })
     },
+    // insert
     addComment () {
       const self = this
       let sort = self.ooxx.getMaxOfArray(self.commentsList, 'sort')
@@ -100,15 +109,18 @@ export default {
         self.logger.warn('msg_validation', self.msg_validation)
       }
     },
+    // delete
     deleteComment (key) {
       const self = this
       self.commentsListDB.child(key).remove()
       self.reloadLeaveComments()
     },
+    // insert api
     insertComment (param) {
       const self = this
       self.commentsListDB.push(param)
     },
+    // toast
     toast (toaster, title, content) {
       this.counter++
       this.$bvToast.toast(content, {
@@ -118,6 +130,51 @@ export default {
         appendToast: false,
         variant: 'danger'
       })
+    },
+    dragStart (which, ev) {
+      ev.dataTransfer.setData('Text', this.id)
+      ev.dataTransfer.dropEffect = 'move'
+      this.dragging = which
+      ev.target.style.opacity = '.7'
+    },
+    dragEnd (ev) {
+      this.dragging = -1
+      ev.target.style.opacity = '1'
+    },
+    dragFinish (to, ev) {
+      this.moveItem(this.dragging, to)
+      // ev.target.style.marginTop = '2px'
+      // ev.target.style.marginBottom = '2px'
+    },
+    moveItem (from, to) {
+      const self = this
+      // self.commentsList[to]
+      // from 從
+      // to 到
+
+      // console.log('to', to)
+      // console.log('from', from)
+      // update
+
+      let paramTo = self.commentsList[to]
+      let paramFrom = self.commentsList[from]
+      let temp = paramTo['sort']
+      paramTo['sort'] = paramFrom['sort']
+      paramFrom['sort'] = temp
+
+      let dbTo = firebase.database().ref('/commentsList/' + self.commentsList[to].key.toString())
+      let dbFrom = firebase.database().ref('/commentsList/' + self.commentsList[from].key.toString())
+      dbTo.set(paramTo)
+      dbFrom.set(paramFrom)
+      // self.reloadLeaveComments()
+      // if (to === -1) {
+      //   this.removeItemAt(from)
+      // } else {
+      //   this.commentsList.splice(to, 0, this.commentsList.splice(from, 1)[0])
+      // }
+    },
+    removeItemAt (index) {
+      this.commentsList.splice(index, 1)
     }
   },
   mounted () {
