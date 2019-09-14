@@ -84,6 +84,8 @@ export default {
           tempCommentsList[element].key = element
           self.commentsList.push(tempCommentsList[element])
         })
+        console.log(self.commentsList)
+        self.commentsList = self.ooxx.ArraySorForKey(self.commentsList, 'sort')
         self.logger.info('載入列表', self.commentsList)
       })
     },
@@ -133,21 +135,43 @@ export default {
       ev.dataTransfer.setData('Text', this.id)
       ev.dataTransfer.dropEffect = 'move'
       this.dragging = which
+      ev.target.style.opacity = '.7'
     },
     dragEnd (ev) {
       this.dragging = -1
+      ev.target.style.opacity = '1'
     },
     dragFinish (to, ev) {
       this.moveItem(this.dragging, to)
-      ev.target.style.marginTop = '2px'
-      ev.target.style.marginBottom = '2px'
+      // ev.target.style.marginTop = '2px'
+      // ev.target.style.marginBottom = '2px'
     },
     moveItem (from, to) {
-      if (to === -1) {
-        this.removeItemAt(from)
-      } else {
-        this.commentsList.splice(to, 0, this.commentsList.splice(from, 1)[0])
-      }
+      const self = this
+      // self.commentsList[to]
+      // from 從
+      // to 到
+
+      // console.log('to', to)
+      // console.log('from', from)
+      // update
+
+      let paramTo = self.commentsList[to]
+      let paramFrom = self.commentsList[from]
+      let temp = paramTo['sort']
+      paramTo['sort'] = paramFrom['sort']
+      paramFrom['sort'] = temp
+
+      let dbTo = firebase.database().ref('/commentsList/' + self.commentsList[to].key.toString())
+      let dbFrom = firebase.database().ref('/commentsList/' + self.commentsList[from].key.toString())
+      dbTo.set(paramTo)
+      dbFrom.set(paramFrom)
+      // self.reloadLeaveComments()
+      // if (to === -1) {
+      //   this.removeItemAt(from)
+      // } else {
+      //   this.commentsList.splice(to, 0, this.commentsList.splice(from, 1)[0])
+      // }
     },
     removeItemAt (index) {
       this.commentsList.splice(index, 1)

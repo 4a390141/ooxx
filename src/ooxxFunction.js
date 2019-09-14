@@ -20,8 +20,19 @@ function getMaxOfArray (param, key) {
   return key ? Math.max(...param.map(e => e[key.toString()])) : Math.max(...param.map(e => e))
 }
 
+// 陣列
+// key值排序
+function ArraySorForKey (array, key) {
+  if (Array.isArray(array) && key) {
+    return array.sort((a, b) => {
+      return parseInt(a[key], 10) - parseInt(b[key], 10)
+    })
+  }
+}
+
 // export
 export default {
   getObjectKeyLength,
-  getMaxOfArray
+  getMaxOfArray,
+  ArraySorForKey
 }
