@@ -12,7 +12,7 @@
           <label for="feedback-name">title</label>
           <b-input v-model="name" :state="name_validation" id="feedback-name"></b-input>
           <b-form-invalid-feedback :state="name_validation">
-            3到16字以內
+            3到30字以內
           </b-form-invalid-feedback>
           <label for="feedback-msg">value</label>
           <b-input v-model="msg" :state="msg_validation" id="feedback-msg"></b-input>
@@ -34,13 +34,15 @@
         @dragend="dragEnd" @drop="dragFinish(i, $event)"
         draggable="true"
         style="cursor: move;"
+        @click.stop.prevent="copyText(item.name)"
       >
-        <b-card-text>
+        <b-card-text @click.stop.prevent="copyText(item.msg)">
           {{ item.msg }}
         </b-card-text>
         <b-button variant="danger" @click="deleteComment(item.key)">delete</b-button>
       </b-card>
     </div>
+    <font-awesome-icon icon="user-secret" />
 </div>
 </template>
 <script>
@@ -50,6 +52,7 @@
 // https://paper.dropbox.com/doc/Vue-Cli-pbpJGPUyjZy5xuoSFffId
 
 import firebase from 'firebase'
+
 export default {
   name: 'leaveComments',
   components: {
@@ -65,7 +68,7 @@ export default {
   },
   computed: {
     name_validation () {
-      return this.name.length > 2 && this.name.length < 17
+      return this.name.length > 2 && this.name.length < 31
     },
     msg_validation () {
       return this.msg.length >= 0 && this.msg.length < 101
@@ -76,6 +79,8 @@ export default {
     reloadLeaveComments () {
       const self = this
       self.commentsListDB.on('value', function (data) {
+        self.msg = ''
+        self.name = ''
         let tempCommentsList = {}
         tempCommentsList = data.val() ? data.val() : {}
         // 加入key值 並將物件轉成陣列
@@ -175,6 +180,19 @@ export default {
     },
     removeItemAt (index) {
       this.commentsList.splice(index, 1)
+    },
+    // copy
+    copyText (s) {
+      if (s.length > 0) {
+        let clipArea = document.createElement('textarea')
+        clipArea.textContent = s
+
+        document.body.appendChild(clipArea)
+        clipArea.select()
+
+        document.execCommand('copy')
+        clipArea.remove()
+      }
     }
   },
   mounted () {
