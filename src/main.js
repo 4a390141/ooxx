@@ -8,6 +8,15 @@ import firebase from 'firebase'
 //  自定義function
 import ooxx from '../src/ooxxFunction.js'
 import logger from '../src/logger.js'
+// icon
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faUserSecret)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 Vue.prototype.ooxx = ooxx
 Vue.prototype.logger = logger
 //  firebase 設定
