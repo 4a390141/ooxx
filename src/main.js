@@ -9,12 +9,10 @@ import firebase from 'firebase'
 import ooxx from '../src/ooxxFunction.js'
 import logger from '../src/logger.js'
 // icon
+import icons from '../src/icon.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-library.add(faUserSecret)
-
+library.add(icons)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.prototype.ooxx = ooxx

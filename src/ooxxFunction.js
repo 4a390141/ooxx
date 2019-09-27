@@ -29,10 +29,21 @@ function ArraySorForKey (array, key) {
     })
   }
 }
+function copyText (text) {
+  if (text.length > 0) {
+    let clipArea = document.createElement('textarea')
+    clipArea.textContent = text
+    document.body.appendChild(clipArea)
+    clipArea.select()
+    document.execCommand('copy')
+    clipArea.remove()
+  }
+}
 
 // export
 export default {
   getObjectKeyLength,
   getMaxOfArray,
-  ArraySorForKey
+  ArraySorForKey,
+  copyText
 }

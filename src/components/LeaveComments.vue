@@ -1,5 +1,5 @@
 <template>
-  <div class="leaveComments">
+  <div class="leave-comments">
     <b-card-group deck>
       <b-card
         border-variant="primary"
@@ -12,12 +12,12 @@
           <label for="feedback-name">title</label>
           <b-input v-model="name" :state="name_validation" id="feedback-name"></b-input>
           <b-form-invalid-feedback :state="name_validation">
-            3到30字以內
+            <!-- 3到30字以內 -->
           </b-form-invalid-feedback>
           <label for="feedback-msg">value</label>
           <b-input v-model="msg" :state="msg_validation" id="feedback-msg"></b-input>
           <b-form-invalid-feedback :state="msg_validation">
-            100字以內唷
+            <!-- 100字以內唷 -->
           </b-form-invalid-feedback>
           <b-button block variant="primary" @click="addComment">insert</b-button>
       </b-form>
@@ -33,16 +33,15 @@
         @dragstart="dragStart(i, $event)" @dragover.prevent
         @dragend="dragEnd" @drop="dragFinish(i, $event)"
         draggable="true"
-        style="cursor: move;"
-        @click.stop.prevent="copyText(item.name)"
+        style="cursor: move; margin: 5px 0;"
+        @click.stop.prevent="ooxx.copyText(item.name)"
       >
-        <b-card-text @click.stop.prevent="copyText(item.msg)">
+        <b-card-text @click.stop.prevent="ooxx.copyText(item.msg)">
           {{ item.msg }}
         </b-card-text>
         <b-button variant="danger" @click="deleteComment(item.key)">delete</b-button>
       </b-card>
     </div>
-    <font-awesome-icon icon="user-secret" />
 </div>
 </template>
 <script>
@@ -78,10 +77,10 @@ export default {
     // reload function
     reloadLeaveComments () {
       const self = this
+      self.msg = ''
+      self.name = ''
+      let tempCommentsList = {}
       self.commentsListDB.on('value', function (data) {
-        self.msg = ''
-        self.name = ''
-        let tempCommentsList = {}
         tempCommentsList = data.val() ? data.val() : {}
         // 加入key值 並將物件轉成陣列
         self.commentsList = []
@@ -89,7 +88,6 @@ export default {
           tempCommentsList[element].key = element
           self.commentsList.push(tempCommentsList[element])
         })
-        console.log(self.commentsList)
         self.commentsList = self.ooxx.ArraySorForKey(self.commentsList, 'sort')
         self.logger.info('載入列表', self.commentsList)
       })
@@ -137,29 +135,29 @@ export default {
       })
     },
     dragStart (which, ev) {
+      const self = this
       ev.dataTransfer.setData('Text', this.id)
       ev.dataTransfer.dropEffect = 'move'
-      this.dragging = which
+      self.dragging = which
       ev.target.style.opacity = '.7'
     },
     dragEnd (ev) {
-      this.dragging = -1
+      const self = this
+      self.dragging = -1
       ev.target.style.opacity = '1'
     },
     dragFinish (to, ev) {
-      this.moveItem(this.dragging, to)
+      const self = this
+      self.moveItem(self.dragging, to)
       // ev.target.style.marginTop = '2px'
       // ev.target.style.marginBottom = '2px'
     },
+    // move Update
     moveItem (from, to) {
       const self = this
       // self.commentsList[to]
       // from 從
       // to 到
-
-      // console.log('to', to)
-      // console.log('from', from)
-      // update
 
       let paramTo = self.commentsList[to]
       let paramFrom = self.commentsList[from]
@@ -179,20 +177,8 @@ export default {
       // }
     },
     removeItemAt (index) {
-      this.commentsList.splice(index, 1)
-    },
-    // copy
-    copyText (s) {
-      if (s.length > 0) {
-        let clipArea = document.createElement('textarea')
-        clipArea.textContent = s
-
-        document.body.appendChild(clipArea)
-        clipArea.select()
-
-        document.execCommand('copy')
-        clipArea.remove()
-      }
+      const self = this
+      self.commentsList.splice(index, 1)
     }
   },
   mounted () {
@@ -202,7 +188,7 @@ export default {
 }
 </script>
 <style lang="scss">
-  .leaveComments{
+  .leave-comments{
     padding: 10px;
     width: 100%;
     overflow-x: hidden;

@@ -12,7 +12,7 @@
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
             <b-nav-item right>
-              <router-link to="/leaveComments">留言</router-link>
+              <router-link to="/leaveComments">List</router-link>
             </b-nav-item>
             <b-nav-item-dropdown right>
               <!-- Using 'button-content' slot -->
