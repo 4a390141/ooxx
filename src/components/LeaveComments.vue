@@ -74,7 +74,7 @@ export default {
     }
   },
   methods: {
-    // reload function
+    // reload
     reloadLeaveComments () {
       const self = this
       self.msg = ''
@@ -92,27 +92,7 @@ export default {
         self.logger.info('載入列表', self.commentsList)
       })
     },
-    // insert
-    addComment () {
-      const self = this
-      let sort = self.ooxx.getMaxOfArray(self.commentsList, 'sort')
-      let param = {
-        name: self.name,
-        msg: self.msg,
-        sort: sort + 1 || 0,
-        flag: 'N'
-      }
-
-      if (self.name_validation && self.msg_validation) {
-        self.logger.info('送出 param', param)
-        self.insertComment(param)
-      } else {
-        self.toast('b-toaster-top-center', 'Error', '格式不符')
-        self.logger.warn('name_validation', self.name_validation)
-        self.logger.warn('msg_validation', self.msg_validation)
-      }
-    },
-    // delete
+    // delete api
     deleteComment (key) {
       const self = this
       self.commentsListDB.child(key).remove()
@@ -123,36 +103,27 @@ export default {
       const self = this
       self.commentsListDB.push(param)
     },
-    // toast
-    toast (toaster, title, content) {
-      this.counter++
-      this.$bvToast.toast(content, {
-        title: `${title}`,
-        toaster: toaster,
-        solid: true,
-        appendToast: false,
-        variant: 'danger'
-      })
-    },
-    dragStart (which, ev) {
+    // drag start to dataTransfer
+    dragStart (index, event) {
       const self = this
-      ev.dataTransfer.setData('Text', this.id)
-      ev.dataTransfer.dropEffect = 'move'
-      self.dragging = which
-      ev.target.style.opacity = '.7'
+      event.dataTransfer.setData('Text', this.id)
+      event.dataTransfer.dropEffect = 'move'
+      self.dragging = index
+      event.target.style.opacity = '.7'
     },
-    dragEnd (ev) {
+    dragEnd (event) {
       const self = this
       self.dragging = -1
-      ev.target.style.opacity = '1'
+      event.target.style.opacity = '1'
     },
-    dragFinish (to, ev) {
+    // drop and move
+    dragFinish (to, event) {
       const self = this
       self.moveItem(self.dragging, to)
       // ev.target.style.marginTop = '2px'
       // ev.target.style.marginBottom = '2px'
     },
-    // move Update
+    // update api for move
     moveItem (from, to) {
       const self = this
       // self.commentsList[to]
@@ -175,6 +146,37 @@ export default {
       // } else {
       //   this.commentsList.splice(to, 0, this.commentsList.splice(from, 1)[0])
       // }
+    },
+    // param
+    addComment () {
+      const self = this
+      let sort = self.ooxx.getMaxOfArray(self.commentsList, 'sort')
+      let param = {
+        name: self.name,
+        msg: self.msg,
+        sort: sort + 1 || 0,
+        flag: 'N'
+      }
+
+      if (self.name_validation && self.msg_validation) {
+        self.logger.info('送出 param', param)
+        self.insertComment(param)
+      } else {
+        self.toast('b-toaster-top-center', 'Error', '格式不符')
+        self.logger.warn('name_validation', self.name_validation)
+        self.logger.warn('msg_validation', self.msg_validation)
+      }
+    },
+    // toast
+    toast (toaster, title, content) {
+      this.counter++
+      this.$bvToast.toast(content, {
+        title: `${title}`,
+        toaster: toaster,
+        solid: true,
+        appendToast: false,
+        variant: 'danger'
+      })
     },
     removeItemAt (index) {
       const self = this

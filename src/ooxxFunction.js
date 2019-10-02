@@ -29,6 +29,8 @@ function ArraySorForKey (array, key) {
     })
   }
 }
+
+// other
 function copyText (text) {
   if (text.length > 0) {
     let clipArea = document.createElement('textarea')

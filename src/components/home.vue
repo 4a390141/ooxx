@@ -4,7 +4,7 @@
       <router-link to="/leaveComments">List</router-link>
     </a>
     <!-- <font-awesome-icon :icon="['fa', 'coffee']" />
-    <font-awesome-icon :icon="['fab', 'google-plus']" /> -->
+    <font-awesome-icon :icon="['fab', 'google-plus']" />-->
   </div>
 </template>
 <script>
@@ -21,7 +21,14 @@ export default {
   data () {
     return {}
   },
-  computed: {},
+  computed: {
+    // ...mapGetters([
+    //   'enableNameList'
+    // ]),
+    // ...mapGetters({
+    //   nameList: 'enableNameList'
+    // })
+  },
   methods: {},
   mounted () {
     // const self = this

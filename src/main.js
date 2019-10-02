@@ -12,11 +12,17 @@ import logger from '../src/logger.js'
 import icons from '../src/icon.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// common component
+// import { aaa } from '../src/ooxxComponent'
+// Vue.component('ooxx-aaa', aaa)
+
 library.add(icons)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.prototype.ooxx = ooxx
 Vue.prototype.logger = logger
+
 //  firebase 設定
 const firebaseConfig = {
   apiKey: 'AIzaSyCgW5dRMaPyjm_f2Q6_fo3UgLC7V2m-Ylg',
@@ -31,7 +37,6 @@ firebase.initializeApp(firebaseConfig)
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
-
 new Vue({
   router,
   store,
