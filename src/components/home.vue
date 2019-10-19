@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <a href="javascript:;">
-      <router-link to="/leaveComments">List</router-link>
+      <router-link to="/leaveComments" style="margin-right:15px;">List</router-link>
+      <router-link to="/half">half</router-link>
     </a>
     <!-- <font-awesome-icon :icon="['fa', 'coffee']" />
     <font-awesome-icon :icon="['fab', 'google-plus']" />-->

@@ -51,7 +51,6 @@
 // https://paper.dropbox.com/doc/Vue-Cli-pbpJGPUyjZy5xuoSFffId
 
 import firebase from 'firebase'
-
 export default {
   name: 'leaveComments',
   components: {
